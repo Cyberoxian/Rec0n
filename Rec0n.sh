@@ -68,7 +68,6 @@ rm $url/recon/200.txt
 rm $url/recon/403.txt
 rm $url/recon/404.txt
 rm $url/recon/status.txt
-httpx-toolkit -l $url/recon/200_live.txt -sc -td
 
 echo "[+] Scanning for open ports..."
 nmap -iL $url/recon/alive.txt -T4 -oA $url/recon/scans/scanned.txt 
