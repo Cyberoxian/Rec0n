@@ -58,7 +58,7 @@ cat $url/recon/alive.txt | httpx-toolkit -sc >> $url/recon/status.txt
 cat $url/recon/status.txt |grep "200" >> $url/recon/200.txt
 cat $url/recon/status.txt |grep "403" >> $url/recon/403.txt
 cat $url/recon/status.txt |grep "404" >> $url/recon/404.txt
-
+httpx-toolkit -l $url/recon/200.txt -sc -td
 #tr used to remove content
 #sed used to remove last 3 characters
 #If error occur replace [[32m200[0m] into 200 and remove sed
