@@ -41,15 +41,17 @@ if [ ! -f "$url/recon/subdomain.txt" ];then
 	touch $url/recon/subdomain.txt
 fi
 
-echo "[+] Harvesting subdomains with Assetfinder... + Subfinder..."
-assetfinder -subs-only $url >> $url/recon/assets.txt
-subfinder -d $url >> $url/recon/subfinder.txt
+echo "[+] Harvesting subdomains with assetfinder..."
+assetfinder --subs-only $url >> $url/recon/assets.txt
 cat $url/recon/assets.txt | grep $1 >> $url/recon/subdomain.txt
-cat $url/recon/subfinder.txt | grep $1 >> $url/recon/subdomain.txt
-rm $url/recon/assets.txt 
-rm $url/recon/subfinder.txt
+rm $url/recon/assets.txt
 
-echo "[+] Probing for alive domains..." ## Install Manually by using pimpmykali tool(For Kali Linux)
+echo "[+] Double checking for subdomains with Subfinder..."
+subfinder -d $url >> $url/recon/f.txt
+sort -u $url/recon/f.txt >> $url/recon/subdomain.txt
+rm $url/recon/f.txt
+
+echo "[+] Probing for alive domains..." ## Install Manually by using pimpmykali tool(Kali Linux)
 cat $url/recon/subdomain.txt | sort | uniq | httprobe -s -p https:443 | sed 's/https\?:\/\///' | tr -d ':443' >> $url/recon/a.txt
 sort -u $url/recon/a.txt > $url/recon/alive.txt
 rm $url/recon/a.txt
@@ -63,7 +65,8 @@ cat $url/recon/status.txt |grep "404" >> $url/recon/404.txt
 #If error occur replace [[32m200[0m] into 200 and remove sed
 #If error occur replace [[31m403[0m] into 403 and remove sed
 cat $url/recon/200.txt | tr -d '[[32200[0]'| sed 's/.\{3\}$//' >> $url/recon/200_live.txt 
-cat $url/recon/403.txt | tr -d '[[31403[0]'| sed 's/.\{3\}$//' >> $url/recon/403_live.txt 
+cat $url/recon/403.txt | tr -d '[[31403[0]'| sed 's/.\{3\}$//' >> $url/recon/403_live.txt
+cat $url/recon/404.txt | tr -d '[[31403[0]'| sed 's/.\{3\}$//' >> $url/recon/404_live.txt
 rm $url/recon/200.txt
 rm $url/recon/403.txt
 rm $url/recon/404.txt
