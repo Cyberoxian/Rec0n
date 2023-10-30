@@ -15,7 +15,7 @@
     printf "\e[1m\e[95m%s\e[0m\n" "               /"
     printf "\e[1m\e[96m%s\e[0m\n" "             _'"
     printf "\e[1m\e[97m%s\e[0m\n" "           _-'"
-    printf "\e[1m\e[36m%s\e[0m\n" "			~Rajiv Sharma-0x13 (v.2)"
+    printf "\e[1m\e[31m%s\e[0m\n" "			~Rajiv Sharma-0x13 (v.2)"
     printf "\n"
     printf "\n"
 	
@@ -41,20 +41,38 @@ if [ ! -f "$url/recon/subdomain.txt" ];then
 	touch $url/recon/subdomain.txt
 fi
 
-echo "[+] Harvesting subdomains with assetfinder..."
-assetfinder --subs-only $url >> $url/recon/assets.txt
+echo "[+] Harvesting subdomains with crt.sh..." #Crt.sh
+requestsearch="$(curl -s "https://crt.sh?q=%.$url&output=json")"
+echo $requestsearch > req.txt
+cat req.txt | jq ".[].common_name,.[].name_value"| cut -d'"' -f2 | sed 's/\\n/\n/g' | sed 's/\*.//g'| sed -r 's/([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})//g' | sort | uniq > $url/recon/crt.txt
+rm req.txt
+echo ""
+cat $url/recon/crt.txt
+echo ""
+cat $url/recon/crt.txt | grep $1 >> $url/recon/subdomain.txt
+echo -e "\e[32m[+]\e[0m Crt.sh Discovered \e[31m"$(cat $url/recon/crt.txt | wc -l)"\e[0m subdomains"
+rm $url/recon/crt.txt
+
+
+echo "[+] Harvesting subdomains with assetfinder..." #Assetfinder
+assetfinder $url >> $url/recon/assets.txt
 cat $url/recon/assets.txt | grep $1 >> $url/recon/subdomain.txt
+echo -e "\e[32m[+]\e[0m Assetfinder Discovered \e[31m"$(cat $url/recon/assets.txt | wc -l)"\e[0m subdomains"
 rm $url/recon/assets.txt
 
-echo "[+] Double checking for subdomains with Subfinder..."
-subfinder -d $url >> $url/recon/f.txt
-sort -u $url/recon/f.txt >> $url/recon/subdomain.txt
-rm $url/recon/f.txt
 
-echo "[+] Probing for alive domains..." ## Install Manually by using pimpmykali tool(Kali Linux)
+echo "[+] Double checking for subdomains with Subfinder..." #Subfinder
+subfinder -d $url >> $url/recon/f.txt
+cat $url/recon/f.txt | grep $1 >> $url/recon/subdomain.txt
+echo -e "\e[32m[+]\e[0m Subfinder Discovered \e[31m"$(cat $url/recon/f.txt | wc -l)"\e[0m subdomains"
+rm $url/recon/f.txt
+echo -e "\e[32m[+]\e[0m Total Number of Subdomain's Discovered \e[31m"$(cat $url/recon/subdomain.txt | wc -l)"\e[0m from $url"
+
+echo "[+] Probing for alive domains..." ## Install Manually by using pimpmykali tool(For Kali Linux)
 cat $url/recon/subdomain.txt | sort | uniq | httprobe -s -p https:443 | sed 's/https\?:\/\///' | tr -d ':443' >> $url/recon/a.txt
 sort -u $url/recon/a.txt > $url/recon/alive.txt
 rm $url/recon/a.txt
+
 
 cat $url/recon/alive.txt | httpx-toolkit -sc >> $url/recon/status.txt
 cat $url/recon/status.txt |grep "200" >> $url/recon/200.txt
@@ -65,8 +83,7 @@ cat $url/recon/status.txt |grep "404" >> $url/recon/404.txt
 #If error occur replace [[32m200[0m] into 200 and remove sed
 #If error occur replace [[31m403[0m] into 403 and remove sed
 cat $url/recon/200.txt | tr -d '[[32200[0]'| sed 's/.\{3\}$//' >> $url/recon/200_live.txt 
-cat $url/recon/403.txt | tr -d '[[31403[0]'| sed 's/.\{3\}$//' >> $url/recon/403_live.txt
-cat $url/recon/404.txt | tr -d '[[31403[0]'| sed 's/.\{3\}$//' >> $url/recon/404_live.txt
+cat $url/recon/403.txt | tr -d '[[31403[0]'| sed 's/.\{3\}$//' >> $url/recon/403_live.txt 
 rm $url/recon/200.txt
 rm $url/recon/403.txt
 rm $url/recon/404.txt
