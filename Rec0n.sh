@@ -71,6 +71,7 @@ echo -e "\e[32m[+]\e[0m Total Number of Subdomain's Discovered \e[31m"$(cat $url
 echo "[+] Probing for alive domains..." ## Install Manually by using pimpmykali tool(For Kali Linux)
 cat $url/recon/subdomain.txt | sort | uniq | httprobe -s -p https:443 | sed 's/https\?:\/\///' | tr -d ':443' >> $url/recon/a.txt
 sort -u $url/recon/a.txt > $url/recon/alive.txt
+echo -e "\e[32m[+]\e[0m Total Number of Alive domain's Discovered \e[31m"$(cat $url/recon/alive.txt | wc -l)"\e[0m from $url"
 rm $url/recon/a.txt
 
 
