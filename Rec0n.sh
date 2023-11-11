@@ -32,6 +32,9 @@ if [ ! -d "$url/recon/scans" ];then
 	mkdir $url/recon/scans
 fi
 if [ ! -d "$url/recon" ];then
+	mkdir $url/recon/screenshot
+fi
+if [ ! -d "$url/recon" ];then
 	mkdir $url/recon
 fi
 if [ ! -f "$url/recon/alive.txt" ];then
@@ -41,7 +44,7 @@ if [ ! -f "$url/recon/subdomain.txt" ];then
 	touch $url/recon/subdomain.txt
 fi
 
-echo "[+] Harvesting subdomains with crt.sh..." #Crt.sh
+echo -e "\e[31m[+]\e[0m \e[33mHarvesting subdomains with crt.sh...\e[0m" #Crt.sh
 requestsearch="$(curl -s "https://crt.sh?q=%.$url&output=json")"
 echo $requestsearch > req.txt
 cat req.txt | jq ".[].common_name,.[].name_value"| cut -d'"' -f2 | sed 's/\\n/\n/g' | sed 's/\*.//g'| sed -r 's/([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})//g' | sort | uniq > $url/recon/crt.txt
@@ -54,21 +57,21 @@ echo -e "\e[32m[+]\e[0m Crt.sh Discovered \e[31m"$(cat $url/recon/crt.txt | wc -
 rm $url/recon/crt.txt
 
 
-echo "[+] Harvesting subdomains with assetfinder..." #Assetfinder
+echo -e "\e[31m[+]\e[0m \e[33mHarvesting subdomains with assetfinder...\e[0m" #Assetfinder
 assetfinder $url >> $url/recon/assets.txt
 cat $url/recon/assets.txt | grep $1 >> $url/recon/subdomain.txt
 echo -e "\e[32m[+]\e[0m Assetfinder Discovered \e[31m"$(cat $url/recon/assets.txt | wc -l)"\e[0m subdomains"
 rm $url/recon/assets.txt
 
 
-echo "[+] Double checking for subdomains with Subfinder..." #Subfinder
+echo -e "\e[31m[+]\e[0m \e[33mDouble checking for subdomains with Subfinder...\e[0m" #Subfinder
 subfinder -d $url >> $url/recon/f.txt
 cat $url/recon/f.txt | grep $1 >> $url/recon/subdomain.txt
 echo -e "\e[32m[+]\e[0m Subfinder Discovered \e[31m"$(cat $url/recon/f.txt | wc -l)"\e[0m subdomains"
 rm $url/recon/f.txt
 echo -e "\e[32m[+]\e[0m Total Number of Subdomain's Discovered \e[31m"$(cat $url/recon/subdomain.txt | wc -l)"\e[0m from $url"
 
-echo "[+] Probing for alive domains..." ## Install Manually by using pimpmykali tool(For Kali Linux)
+echo -e "\e[31m[+]\e[0m \e[33m Probing for alive domains...\e[0m" ## Install Manually by using pimpmykali tool(For Kali Linux)
 cat $url/recon/subdomain.txt | sort | uniq | httprobe -s -p https:443 | sed 's/https\?:\/\///' | tr -d ':443' >> $url/recon/a.txt
 sort -u $url/recon/a.txt > $url/recon/alive.txt
 echo -e "\e[32m[+]\e[0m Total Number of Alive domain's Discovered \e[31m"$(cat $url/recon/alive.txt | wc -l)"\e[0m from $url"
@@ -90,7 +93,10 @@ rm $url/recon/403.txt
 rm $url/recon/404.txt
 rm $url/recon/status.txt
 
-echo "[+] Scanning for open ports..."
+echo -e "\e[31m[+]\e[0m \e[33m Scanning for Aquatone...\e[0m"
+curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u | httprobe -c  100 | aquatone -out $url/recon/screenshot
+
+echo -e "\e[31m[+]\e[0m \e[33m Scanning for open ports...\e[0m"
 nmap -iL $url/recon/alive.txt -T4 -oA $url/recon/scans/scanned.txt 
 
 end_time=$(date +%s)
