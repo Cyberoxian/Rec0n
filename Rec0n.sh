@@ -77,9 +77,9 @@ sort -u $url/recon/a.txt > $url/recon/alive.txt
 echo -e "\e[32m[+]\e[0m Total Number of Alive domain's Discovered \e[31m"$(cat $url/recon/alive.txt | wc -l)"\e[0m from $url"
 rm $url/recon/a.txt
 
+echo -e "\e[31m[+]\e[0m \e[33m Checking Status Code...\e[0m"
 cat $url/recon/alive.txt | httpx-toolkit -sc -td -cname -probe -ip
 
-echo -e "\e[31m[+]\e[0m \e[33m Checking Status Code...\e[0m"
 cat $url/recon/alive.txt | httpx-toolkit -sc >> $url/recon/status.txt
 cat $url/recon/status.txt |grep "200" >> $url/recon/200.txt
 cat $url/recon/status.txt |grep "403" >> $url/recon/403.txt
