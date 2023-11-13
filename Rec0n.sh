@@ -79,6 +79,7 @@ rm $url/recon/a.txt
 
 cat $url/recon/alive.txt | httpx-toolkit -sc -td -cname -probe -ip
 
+echo -e "\e[31m[+]\e[0m \e[33m Checking Status Code...\e[0m"
 cat $url/recon/alive.txt | httpx-toolkit -sc >> $url/recon/status.txt
 cat $url/recon/status.txt |grep "200" >> $url/recon/200.txt
 cat $url/recon/status.txt |grep "403" >> $url/recon/403.txt
