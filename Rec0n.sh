@@ -99,7 +99,7 @@ echo -e "\e[31m[+]\e[0m \e[33m Scanning for Aquatone...\e[0m"
 curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u | httprobe -c  100 | aquatone -out $url/recon/screenshot
 
 echo -e "\e[31m[+]\e[0m \e[33m Scanning for open ports...\e[0m"
-nmap -iL $url/recon/alive.txt -T4 -oA $url/recon/scans/scanned.txt 
+nmap -A -iL $url/recon/alive.txt -T4 -oA $url/recon/scans/scanned.txt 
 
 end_time=$(date +%s)
 execution_time=$((end_time - start_time))
