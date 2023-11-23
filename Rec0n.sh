@@ -89,8 +89,6 @@ cat "$url/recon/alive.txt" | xargs -I{} host {} | tee -a "$url/recon/host.txt"
 echo -e "\n\e[32m[+]\e[0m Host Discovered \e[31m"$(cat $url/recon/host.txt | wc -l)"\e[0m IPv4/IPv6"
 
 ## HTTPX-Toolkit
-echo -e "\n\e[31m[+]\e[0m \e[33m Checking Status Code on Terminal...\e[0m"
-cat $url/recon/alive.txt | httpx-toolkit -title -wc -sc -cl -ct -cname -web-server -threads 75 -location
 
 echo -e "\n\e[31m[+]\e[0m \e[33m Checking Status Code of Alive Domains...\e[0m"
 cat $url/recon/alive.txt | httpx-toolkit -sc >> $url/recon/status.txt
@@ -115,6 +113,11 @@ curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | se
 ## Scanning Port
 echo -e "\e[31m[+]\e[0m \e[33m Scanning for open ports...\e[0m"
 nmap -A -iL $url/recon/alive.txt -T4 -oA $url/recon/scans/scanned.txt 
+
+#HTTPX-Toolkit
+
+echo -e "\n\e[31m[+]\e[0m \e[33m Checking Status Code on Terminal...\e[0m"
+cat $url/recon/alive.txt | httpx-toolkit -title -wc -sc -cl -ct -cname -web-server -threads 75 -location
 
 end_time=$(date +%s)
 execution_time=$((end_time - start_time))
