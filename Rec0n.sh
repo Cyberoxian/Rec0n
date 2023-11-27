@@ -120,6 +120,17 @@ cat $url/recon/alive.txt | httpx-toolkit -title -wc -sc -cl -ct -cname -web-serv
 echo -e "\e[31m[+]\e[0m \e[33m Scanning for open ports...\e[0m"
 nmap -A -iL $url/recon/alive.txt -T4 -oA $url/recon/scans/scanned.txt 
 
+#WaybackUrl's
+
+cat alive.txt | waybackurls >> $url/recon/url.txt
+
+# GF
+#go install github.com/tomnomnom/gf@latest
+#git clone https://github.com/1ndianl33t/Gf-Patterns
+#sudo cp ~/go/bin/gf /bin/
+#mkdir .gf
+#mv ~/Gf-Patterns/*.json ~/.gf
+
 
 end_time=$(date +%s)
 execution_time=$((end_time - start_time))
