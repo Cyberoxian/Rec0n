@@ -4,18 +4,19 @@
     printf "\e[1m\e[31m%s\e[0m\n" "            _"
     printf "\e[1m\e[32m%s\e[0m\n" "            / \\      _-'"
     printf "\e[1m\e[33m%s\e[0m\n" "          _/|  \\-''- _ /"
-    printf "\e[1m\e[34m%s\e[0m\n" "       __-' { |          \\"
+    printf "\e[1m\e[34m%s\e[0m\n" "       __-' { |          \\ "
     printf "\e[1m\e[35m%s\e[0m\n" "          /             \\"
     printf "\e[1m\e[36m%s\e[0m\n" "         /       \"o.  |o }"
     printf "\e[1m\e[37m%s\e[0m\n" "         |            \\ ;"
-    printf "\e[1m\e[91m%s\e[0m\n" "                       ',"
+    printf "\e[1m\e[91m%s\e[0m\n" "                       ',    </ScR1Pt> Advanced WebApp Recon Tool </ScR1Pt>"
     printf "\e[1m\e[92m%s\e[0m\n" "            \\_         __\\"
     printf "\e[1m\e[93m%s\e[0m\n" "              ''-_    \\.//"
     printf "\e[1m\e[94m%s\e[0m\n" "                / '-____'"
     printf "\e[1m\e[95m%s\e[0m\n" "               /"
     printf "\e[1m\e[96m%s\e[0m\n" "             _'"
-    printf "\e[1m\e[97m%s\e[0m\n" "           _-'"
-    printf "\e[1m\e[31m%s\e[0m\n" "			~Rajiv Sharma-0x13 (v.2)"
+    printf "\e[1m\e[97m%s\e[0m\n" "           _-'" 
+    printf "\n"
+    printf "\n\e[1m\e[32m%s\e[0m\n" "                             [*] Author ~Rajiv Sharma-0x14 (v.2)"
     printf "\n"
     printf "\n"
 	
@@ -34,6 +35,9 @@ fi
 if [ ! -d "$url/recon" ];then
 	mkdir $url/recon/screenshot
 fi
+if [ ! -d "$url/recon/gf" ];then
+	mkdir $url/recon/gf
+fi
 if [ ! -d "$url/recon" ];then
 	mkdir $url/recon
 fi
@@ -44,7 +48,7 @@ if [ ! -f "$url/recon/subdomain.txt" ];then
 	touch $url/recon/subdomain.txt
 fi
 ## Crt.sh
-echo -e "\e[31m[+]\e[0m \e[33mHarvesting subdomains with crt.sh...\e[0m" #Crt.sh
+echo -e "\e[31m[+]\e[0m \e[33mHarvesting subdomains with crt.sh ⚙️ ...\e[0m" #Crt.sh
 
 requestsearch="$(curl -s "https://crt.sh?q=%.$url&output=json")"
 echo $requestsearch > req.txt
@@ -58,7 +62,7 @@ echo -e "\e[32m[+]\e[0m Crt.sh Discovered \e[31m"$(cat $url/recon/crt.txt | wc -
 rm $url/recon/crt.txt
 
 ## Assetfinder
-echo -e "\n\e[31m[+]\e[0m \e[33mHarvesting subdomains with assetfinder...\e[0m" #Assetfinder
+echo -e "\n\e[31m[+]\e[0m \e[33mHarvesting subdomains with assetfinder ⚙️ ...\e[0m" #Assetfinder
 
 assetfinder $url >> $url/recon/assets.txt
 cat $url/recon/assets.txt | grep $1 >> $url/recon/subdomain.txt
@@ -66,16 +70,16 @@ echo -e "\n\e[32m[+]\e[0m Assetfinder Discovered \e[31m"$(cat $url/recon/assets.
 rm $url/recon/assets.txt
 
 ## Subfinder
-echo -e "\n\e[31m[+]\e[0m \e[33mDouble checking for subdomains with Subfinder...\e[0m"
+echo -e "\n\e[31m[+]\e[0m \e[33mDouble checking for subdomains with Subfinder 🔥 ...\e[0m"
 
-subfinder -d $url -all -cs | tee -a $url/recon/f.txt
+subfinder -d $url | tee -a $url/recon/f.txt
 cat $url/recon/f.txt | grep $1 >> $url/recon/subdomain.txt
 echo -e "\e[32m[+]\e[0m Subfinder Discovered \e[31m"$(cat $url/recon/f.txt | wc -l)"\e[0m subdomains"
 rm $url/recon/f.txt
 echo -e "\e[32m[+]\e[0m Total Number of Subdomain's Discovered \e[31m"$(cat $url/recon/subdomain.txt | wc -l)"\e[0m from $url"
 
 ## HTTProbe
-echo -e "\n\e[31m[+]\e[0m \e[33m Probing for alive domains...\e[0m" ## Install Manually by using pimpmykali tool(For Kali Linux)
+echo -e "\n\e[31m[+]\e[0m \e[33m Probing for alive domains 🕵️ ...\e[0m" ## Install Manually by using pimpmykali tool(For Kali Linux)
 
 cat $url/recon/subdomain.txt | sort | uniq | httprobe -s -p https:443 | sed 's/https\?:\/\///' | tr -d ':443' >> $url/recon/a.txt
 sort -u $url/recon/a.txt > $url/recon/alive.txt
@@ -84,13 +88,13 @@ echo -e "\e[32m[+]\e[0m Total Number of Alive domain's Discovered \e[31m"$(cat $
 rm $url/recon/a.txt
 
 ## Host IPv4/IPv6
-echo -e "\n\e[31m[+]\e[0m \e[33m Host with IPv4/IPv6...\e[0m"
+echo -e "\n\e[31m[+]\e[0m \e[33m Host with IPv4/IPv6 🧐 ...\e[0m"
 cat "$url/recon/alive.txt" | xargs -I{} host {} | tee -a "$url/recon/host.txt"
 echo -e "\n\e[32m[+]\e[0m Host Discovered \e[31m"$(cat $url/recon/host.txt | wc -l)"\e[0m IPv4/IPv6"
 
 ## HTTPX-Toolkit
 
-echo -e "\n\e[31m[+]\e[0m \e[33m Checking Status Code of Alive Domains...\e[0m"
+echo -e "\n\e[31m[+]\e[0m \e[33m Checking Status Code of Alive Domains 🔥 ...\e[0m"
 cat $url/recon/alive.txt | httpx-toolkit -sc >> $url/recon/status.txt
 cat $url/recon/status.txt |grep "200" >> $url/recon/200.txt
 cat $url/recon/status.txt |grep "403" >> $url/recon/403.txt
@@ -107,34 +111,68 @@ rm $url/recon/404.txt
 rm $url/recon/status.txt
 
 ## Aquatone
-echo -e "\n\e[31m[+]\e[0m \e[33m Scanning for Aquatone...\e[0m"
+echo -e "\n\e[31m[+]\e[0m \e[33m Scanning for Aquatone 🔍 ...\e[0m"
 curl -s https://crt.sh/\?q\=%25.$url\&output\=json | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u | httprobe -c  100 | aquatone -out $url/recon/screenshot
 
 #HTTPX-Toolkit
 
-echo -e "\n\e[31m[+]\e[0m \e[33m Checking Status Code on Terminal...\e[0m"
+echo -e "\n\e[31m[+]\e[0m \e[33m Checking Status Code on Terminal 🔍 ...\e[0m"
 cat $url/recon/alive.txt | httpx-toolkit -title -wc -sc -cl -ct -cname -web-server -threads 75 -location
 
 
 ## Scanning Port
-echo -e "\e[31m[+]\e[0m \e[33m Scanning for open ports...\e[0m"
+echo -e "\n\e[31m[+]\e[0m \e[33m Scanning for open ports 🔍 ...\e[0m"
 nmap -A -iL $url/recon/alive.txt -T4 -oA $url/recon/scans/scanned.txt 
 
-#WaybackUrl's
+#URL's
+echo -e "\n\e[31m[+]\e[0m \e[33m If Any Error Occur Leave it and stay calm...\e[0m"
+echo -e "\n\e[31m[+]\e[0m \e[33m This May Take A While. Take Coffee and chill...\e[0m"
 
-cat alive.txt | waybackurls >> $url/recon/url.txt
+echo -e "\n\e[31m[+]\e[0m \e[33m Running WaybackUrls 🔥 ...\e[0m"
+cat $url/recon/200_live.txt | waybackurls >> $url/recon/Old_Link.txt
 
-# GF
+echo -e "\n\e[31m[+]\e[0m \e[33m Running Gather All URL's(GAU) 🔥 ...\e[0m"
+cat $url/recon/200_live.txt | gau >> $url/recon/Old_Link.txt
+cat $url/recon/Old_Link.txt | sort -u >> $url/recon/urls.txt
+rm  $url/recon/Old_Link.txt
+
+# GF Patterns
 #go install github.com/tomnomnom/gf@latest
 #git clone https://github.com/1ndianl33t/Gf-Patterns
 #sudo cp ~/go/bin/gf /bin/
 #mkdir .gf
 #mv ~/Gf-Patterns/*.json ~/.gf
+echo -e "\n\e[31m[+]\e[0m \e[33m Running GF Patterns 🚀 ...\e[0m"
+
+printf "\n\e[1m\e[32m%s\e[0m\n" "Checking For IDOR 🔪 ..."
+cat $url/recon/urls.txt | gf idor >> $url/recon/gf/IDOR.txt
+
+printf "\n\e[1m\e[32m%s\e[0m\n" "Checking For RCE 🔪 ..."
+cat $url/recon/urls.txt | gf rce >> $url/recon/gf/RCE.txt
+
+printf "\n\e[1m\e[32m%s\e[0m\n" "Checking For XSS 🔪 ..."
+cat $url/recon/urls.txt | gf xss >> $url/recon/gf/XSS.txt
+
+printf "\n\e[1m\e[32m%s\e[0m\n" "Checking For SQLI 🔪 ..."
+cat $url/recon/urls.txt | gf sqli >> $url/recon/gf/SQLI.txt
+
+printf "\n\e[1m\e[32m%s\e[0m\n" "Checking For Redirect 🔪 ..."
+cat $url/recon/urls.txt | gf redirect >> $url/recon/gf/Redirect.txt
+
+printf "\n\e[1m\e[32m%s\e[0m\n" "Checking For LFI 🔪 ..."
+cat $url/recon/urls.txt | gf lfi >> $url/recon/gf/LFI.txt
+
+printf "\n\e[1m\e[32m%s\e[0m\n" "Checking For SSRF 🔪 ..."
+cat $url/recon/urls.txt | gf ssrf >> $url/recon/gf/SSRF.txt
+
+printf "\n\e[1m\e[32m%s\e[0m\n" "Checking For SSTI 🔪 ..."
+cat $url/recon/urls.txt | gf ssti >> $url/recon/gf/SSTI.txt
 
 
 end_time=$(date +%s)
 execution_time=$((end_time - start_time))
 
 # Display completion message and execution time
-printf "\n\e[1m\e[32m%s\e[0m\n" "Recon Completed Successfully!"
+printf "\n\e[1m\e[32m%s\e[0m\n" "Recon Completed Successfully! ❤️"
 printf "\e[1m\e[32m%s\e[0m\n" "Total execution time: $execution_time seconds"
+
